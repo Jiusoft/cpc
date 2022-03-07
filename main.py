@@ -2,7 +2,6 @@ import sys
 import os
 import PyInstaller.__main__
 from shutil import rmtree
-import contextlib
 args = sys.argv[1:]
 
 
@@ -24,20 +23,27 @@ def toPython(code):
     del tmp, tmp1
 
     if main == "putln":
-        if len(command_list) != 2:
-            pass
-        else:
-            return "print(" + command_list[1] + ")"
+        return "print(" + " ".join(command_list[1:]) + ")"
+
+    if main == "getinput":
+        return "inputresult = input(" + " ".join(command_list[1:]) + ")"
+
+    if "=" in command_list:
+        return " ".join(command_list)
 
 
-if not len(args) == 0:
+
+
+if len(args) == 1:
+    filename = args[0].split("/")[-1].split(".")[0]
+    with open(filename + ".py", 'a+') as f:
+        f.write("import socket\nimport os\nimport math\nimport sys\nhostname=socket.gethostname()\nhostip=socket.gethostbyname(hostname)\n")
     with open(args[0], 'r') as f:
         for line in f.readlines():
             toAppend = toPython(line.strip(" \n"))
-            with open("temp.py", 'a') as f:
+            with open(filename + ".py", 'a') as f:
                 f.write(toAppend + "\n")
 
-    with contextlib.redirect_stdout(None):
-        PyInstaller.__main__.run(["temp.py", "--onefile", "--distpath", "."])
+    PyInstaller.__main__.run([filename + ".py", "--onefile", "--distpath", "."])
     rmtree("build")
-    os.remove("temp.spec"); os.remove("temp.py")
+    os.remove(filename + ".spec"); os.remove(filename + ".py")
