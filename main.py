@@ -1,6 +1,5 @@
 import sys
 import os
-import PyInstaller.__main__
 from shutil import rmtree
 args = sys.argv[1:]
 
@@ -44,6 +43,6 @@ if len(args) == 1:
             with open(filename + ".py", 'a') as f:
                 f.write(toAppend + "\n")
 
-    PyInstaller.__main__.run([filename + ".py", "--onefile", "--distpath", "."])
+    os.system(filename + ".py --onefile --distpath .")
     rmtree("build")
     os.remove(filename + ".spec"); os.remove(filename + ".py")
