@@ -44,7 +44,7 @@ if len(args) == 1:
             with open(filename + ".py", 'a') as f:
                 f.write(toAppend + "\n")
 
-    compiletoSystem = Popen(["python", "-m", "PyInstaller", filename + ".py", "--onefile", "--distpath", "."])
+    compiletoSystem = Popen(["python3", "-m", "PyInstaller", filename + ".py", "--onefile", "--distpath", "."])
     compiletoSystem.wait()
     rmtree("build")
     os.remove(filename + ".spec"); os.remove(filename + ".py")
