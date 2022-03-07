@@ -1,6 +1,7 @@
 import sys
 import os
 from shutil import rmtree
+from subprocess import Popen
 args = sys.argv[1:]
 
 
@@ -43,6 +44,7 @@ if len(args) == 1:
             with open(filename + ".py", 'a') as f:
                 f.write(toAppend + "\n")
 
-    os.system(filename + ".py --onefile --distpath .")
+    compiletoSystem = Popen(["python", "-m", "PyInstaller", filename + ".py", "--onefile", "--distpath", "."])
+    compiletoSystem.wait()
     rmtree("build")
     os.remove(filename + ".spec"); os.remove(filename + ".py")
