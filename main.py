@@ -4,8 +4,13 @@ from shutil import rmtree
 from subprocess import Popen
 args = sys.argv[1:]
 
+class globalVars:
+    def __init__(self):
+        self.indent = 0
+
 
 def toPython(code):
+    global toReturn
     tmp = list(code)
     tmp1 = []
     for item in tmp:
@@ -23,13 +28,26 @@ def toPython(code):
     del tmp, tmp1
 
     if main == "putln":
-        return "print(" + " ".join(command_list[1:]) + ")"
+        toReturn = "print(" + " ".join(command_list[1:]) + ")"
 
     if main == "getinput":
-        return "inputresult = input(" + " ".join(command_list[1:]) + ")"
+        toReturn = "inputresult = input(" + " ".join(command_list[1:]) + ")"
 
     if "=" in command_list:
-        return " ".join(command_list)
+        toReturn = " ".join(command_list)
+
+    if main == "IF":
+        if not command_list[-1]=="THEN":
+            toReturn = 'print(\"\\"THEN\\" expected\")'
+        else:
+            condition = command_list[1:-1]
+            if len(condition) != 3 or not(condition[1] in ["<", "<=", "==", ">=", ">"]):
+                toReturn = 'print("If then condition syntax must be: \\"IF <var> </<=/==/>=/> <var> THEN")'
+            else:
+                toReturn = 'if ' + " ".join(condition) + ": "
+                globalVars().indent += 1
+
+    return toReturn
 
 
 
@@ -41,8 +59,10 @@ if len(args) == 1:
     with open(args[0], 'r') as f:
         for line in f.readlines():
             toAppend = toPython(line.strip(" \n"))
-            with open(filename + ".py", 'a') as f:
-                f.write(toAppend + "\n")
+            for i in range(globalVars().indent):
+                toAppend = "\t" + toAppend
+            with open(filename + ".py", 'a') as nf:
+                nf.write(toAppend + "\n")
 
     compiletoSystem = Popen(["python3", "-m", "PyInstaller", filename + ".py", "--onefile", "--distpath", "."])
     compiletoSystem.wait()
