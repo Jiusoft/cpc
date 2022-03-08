@@ -60,7 +60,7 @@ if len(args) == 1:
         for line in f.readlines():
             toAppend = toPython(line.strip(" \n"))
             for i in range(globalVars().indent):
-                toAppend = "\t" + toAppend
+                toAppend = "    " + toAppend
             with open(filename + ".py", 'a') as nf:
                 nf.write(toAppend + "\n")
 
