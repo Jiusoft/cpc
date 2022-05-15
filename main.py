@@ -2,15 +2,39 @@ import sys
 import os
 from shutil import rmtree
 from subprocess import Popen
-args = sys.argv[1:]
 
-class globalVars:
+
+class vars:
     def __init__(self):
         self.indent = 0
+        self.to_indent = False
+
+    def plus(self):
+        self.indent += 1
+
+    def next_indent(self):
+        self.to_indent = True
+
+
+args = sys.argv[1:]
+
+
+def checkindent(code, indent=0):
+    if code.startswith(" "):
+        indent += 1
+        code = code[1:]
+        if code.startswith(" "):
+            checkindent(code, indent=indent)
+        else:
+            return indent
 
 
 def toPython(code):
-    global toReturn
+    if checkindent(code) is None:
+        indent = 0
+    else:
+        indent = checkindent(code)
+    to_return = ""
     tmp = list(code)
     tmp1 = []
     for item in tmp:
@@ -28,43 +52,41 @@ def toPython(code):
     del tmp, tmp1
 
     if main == "putln":
-        toReturn = "print(" + " ".join(command_list[1:]) + ")"
+        to_return = "print(" + " ".join(command_list[1:]) + ")"
 
     if main == "getinput":
-        toReturn = "inputresult = input(" + " ".join(command_list[1:]) + ")"
+        to_return = "inputresult = input(" + " ".join(command_list[1:]) + ")"
 
     if "=" in command_list:
-        toReturn = " ".join(command_list)
+        to_return = " ".join(command_list)
 
     if main == "IF":
-        if not command_list[-1]=="THEN":
-            toReturn = 'print(\"\\"THEN\\" expected\")'
+        if not command_list[-1] == "THEN":
+            to_return = 'print(\"\\"THEN\\" expected\")'
         else:
             condition = command_list[1:-1]
-            if len(condition) != 3 or not(condition[1] in ["<", "<=", "==", ">=", ">"]):
-                toReturn = 'print("If then condition syntax must be: \\"IF <var> </<=/==/>=/> <var> THEN")'
+            if len(condition) != 3 or not (condition[1] in ["<", "<=", "==", ">=", ">"]):
+                to_return = 'print("If then condition syntax must be: \\"IF <var> </<=/==/>=/> <var> THEN")'
             else:
-                toReturn = 'if ' + " ".join(condition) + ": "
-                globalVars().indent += 1
-
-    return toReturn
-
-
+                to_return = 'if ' + " ".join(condition) + ":"
+    for i in range(indent):
+        to_return = "\t" + to_return
+    return to_return
 
 
 if len(args) == 1:
     filename = args[0].split("/")[-1].split(".")[0]
     with open(filename + ".py", 'a+') as f:
-        f.write("import socket\nimport os\nimport math\nimport sys\nhostname=socket.gethostname()\nhostip=socket.gethostbyname(hostname)\n")
+        f.write(
+            "import socket\nimport os\nimport math\nimport sys\nhostname=socket.gethostname()\nhostip=socket.gethostbyname(hostname)\n")
     with open(args[0], 'r') as f:
         for line in f.readlines():
-            toAppend = toPython(line.strip(" \n"))
-            for i in range(globalVars().indent):
-                toAppend = "    " + toAppend
+            toAppend = toPython(line)
             with open(filename + ".py", 'a') as nf:
                 nf.write(toAppend + "\n")
 
     compiletoSystem = Popen(["python3", "-m", "PyInstaller", filename + ".py", "--onefile", "--distpath", "."])
     compiletoSystem.wait()
     rmtree("build")
-    os.remove(filename + ".spec"); os.remove(filename + ".py")
+    os.remove(filename + ".spec")
+    os.remove(filename + ".py")
