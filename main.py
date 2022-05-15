@@ -31,7 +31,7 @@ def checkindent(code, indent=0):
 
 def toPython(code):
     if code == "\n":
-        return ""
+        return "\n"
     elif code.startswith("#addmod "):
         try:
             if code.split(" ")[1] == "libguimod\n":
