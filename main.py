@@ -4,18 +4,6 @@ from shutil import rmtree
 from subprocess import Popen
 
 
-class vars:
-    def __init__(self):
-        self.indent = 0
-        self.to_indent = False
-
-    def plus(self):
-        self.indent += 1
-
-    def next_indent(self):
-        self.to_indent = True
-
-
 args = sys.argv[1:]
 
 
@@ -79,7 +67,7 @@ def toPython(code):
                 condition = command_list[1:-1]
                 if len(condition) != 3 or not (condition[1] in ["<", "<=", "==", ">=", ">"]):
                     to_return = 'print(\"ERROR: If then condition syntax must be: \\"IF <var> </<=/==/>=/> <var> ' \
-                                'THEN\\"\") '
+                                'THEN\\"\")'
                 else:
                     to_return = 'if ' + " ".join(condition) + ":"
         for i in range(indent):
@@ -98,10 +86,6 @@ if len(args) == 1:
             toAppend = toPython(line)
             with open(filename + ".py", 'a') as nf:
                 nf.write(toAppend + "\n")
-
-    with open(filename + ".py") as f:
-        print(f.read())
-        print("\n\n")
 
     compiletoSystem = Popen(["python3", "-m", "PyInstaller", filename + ".py", "--onefile", "--distpath", "."])
     compiletoSystem.wait()
