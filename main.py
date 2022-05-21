@@ -6,6 +6,40 @@ from subprocess import Popen
 
 args = sys.argv[1:]
 
+def escape(string):
+    toreturn=""
+    for char in string:
+        if char=="\"" or char=="(" or char==")":
+            char=f"\\{char}"
+            toreturn+=char
+        else:
+            toreturn+=char
+    return toreturn
+
+
+def shell():
+    while True:
+        cmd=input(">>> ")
+        os.system(f"py {escape(toPython(cmd))}")
+
+def compile():
+    filename = args[0].split("/")[-1].split(".")[0]
+    with open(filename + ".py", 'a+') as f:
+        f.write(
+            "import socket\nimport os\nimport math\nimport sys\nhostname=socket.gethostname("
+            ")\nhostip=socket.gethostbyname(hostname)\n")
+    with open(args[0], 'r') as f:
+        for line in f.readlines():
+            toAppend = toPython(line)
+            with open(filename + ".py", 'a') as nf:
+                nf.write(toAppend + "\n")
+
+    compiletoSystem = Popen(["python3", "-m", "PyInstaller", filename + ".py", "--onefile", "--distpath", "."])
+    compiletoSystem.wait()
+    rmtree("build")
+    os.remove(filename + ".spec")
+    os.remove(filename + ".py")
+
 
 def checkindent(code, indent=0):
     if code.startswith(" "):
@@ -70,25 +104,17 @@ def toPython(code):
                                 'THEN\\"\")'
                 else:
                     to_return = 'if ' + " ".join(condition) + ":"
+
+        if main == "ELSE":
+            to_return = "else:"
         for i in range(indent):
             to_return = "\t" + to_return
         return to_return
 
 
-if len(args) == 1:
-    filename = args[0].split("/")[-1].split(".")[0]
-    with open(filename + ".py", 'a+') as f:
-        f.write(
-            "import socket\nimport os\nimport math\nimport sys\nhostname=socket.gethostname("
-            ")\nhostip=socket.gethostbyname(hostname)\n")
-    with open(args[0], 'r') as f:
-        for line in f.readlines():
-            toAppend = toPython(line)
-            with open(filename + ".py", 'a') as nf:
-                nf.write(toAppend + "\n")
-
-    compiletoSystem = Popen(["python3", "-m", "PyInstaller", filename + ".py", "--onefile", "--distpath", "."])
-    compiletoSystem.wait()
-    rmtree("build")
-    os.remove(filename + ".spec")
-    os.remove(filename + ".py")
+if len(args)==0:
+    shell()
+elif len(args)==1:
+    compile()
+else:
+    print("Sorry, but cpc can only handle one argument at this moment. ")

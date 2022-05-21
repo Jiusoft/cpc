@@ -1,0 +1,4 @@
+python3
+python3-tk
+python3-pip
+pythonpy
