@@ -16,29 +16,27 @@ def escape(string):
             toreturn+=char
     return toreturn
 
-
-def shell():
-    while True:
-        cmd=input(">>> ")
-        os.system(f"py {escape(toPython(cmd))}")
-
 def compile():
     filename = args[0].split("/")[-1].split(".")[0]
-    with open(filename + ".py", 'a+') as f:
-        f.write(
-            "import socket\nimport os\nimport math\nimport sys\nhostname=socket.gethostname("
-            ")\nhostip=socket.gethostbyname(hostname)\n")
-    with open(args[0], 'r') as f:
-        for line in f.readlines():
-            toAppend = toPython(line)
-            with open(filename + ".py", 'a') as nf:
-                nf.write(toAppend + "\n")
+    if os.path.isfile(filename):
+        with open(filename + ".py", 'a+') as f:
+            f.write(
+                "import socket\nimport os\nimport math\nimport sys\nhostname=socket.gethostname("
+                ")\nhostip=socket.gethostbyname(hostname)\n")
+        with open(args[0], 'r') as f:
+            for line in f.readlines():
+                toAppend = toPython(line)
+                with open(filename + ".py", 'a') as nf:
+                    nf.write(toAppend + "\n")
 
-    compiletoSystem = Popen(["python3", "-m", "PyInstaller", filename + ".py", "--onefile", "--distpath", "."])
-    compiletoSystem.wait()
-    rmtree("build")
-    os.remove(filename + ".spec")
-    os.remove(filename + ".py")
+        compiletoSystem = Popen(["python3", "-m", "PyInstaller", filename + ".py", "--onefile", "--distpath", "."])
+        compiletoSystem.wait()
+        rmtree("build")
+        os.remove(filename + ".spec")
+        os.remove(filename + ".py")
+    else:
+        print("File not found")
+        sys.exit(1)
 
 
 def checkindent(code, indent=0):
@@ -103,6 +101,13 @@ def toPython(code):
                     to_return = 'if ' + " ".join(condition) + ":"
         elif main == "ELSE":
             to_return = "else:"
+        elif main == "exit":
+            if len(command_list) == 2:
+                to_return = f"sys.exit({command_list[1]})"
+            elif len(command_list) == 1:
+                to_return = f"sys.exit()"
+            else:
+                to_return = "print('ERROR: Syntax of exit command: exit <exitcode (optional, default 0)>')"
         else:
             to_return = f"print('Command Not Found: {main}')"
         for i in range(indent):
@@ -111,8 +116,10 @@ def toPython(code):
 
 
 if len(args)==0:
-    shell()
+    print("Required Argument: <filename>")
+    sys.exit(1)
 elif len(args)==1:
     compile()
 else:
     print("Sorry, but cpc can only handle one argument at this moment. ")
+    sys.exit(1)
