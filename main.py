@@ -87,14 +87,11 @@ def toPython(code):
 
         if main == "putln":
             to_return = "print(" + " ".join(command_list[1:]) + ")"
-
-        if main == "getinput":
+        elif main == "getinput":
             to_return = "inputresult = input(" + " ".join(command_list[1:]) + ")"
-
-        if "=" in command_list:
+        elif "=" in command_list:
             to_return = " ".join(command_list)
-
-        if main == "IF":
+        elif main == "IF":
             if not command_list[-1] == "THEN":
                 to_return = 'print(\"ERROR: \\"THEN\\" expected\")'
             else:
@@ -104,9 +101,10 @@ def toPython(code):
                                 'THEN\\"\")'
                 else:
                     to_return = 'if ' + " ".join(condition) + ":"
-
-        if main == "ELSE":
+        elif main == "ELSE":
             to_return = "else:"
+        else:
+            to_return = f"print('Command Not Found: {main}')"
         for i in range(indent):
             to_return = "\t" + to_return
         return to_return
