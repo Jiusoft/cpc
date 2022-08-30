@@ -99,6 +99,16 @@ def toPython(code):
                                 'THEN\\"\")'
                 else:
                     to_return = 'if ' + " ".join(condition) + ":"
+        elif main == "WHILE":
+            if not command_list[-1] == "DO":
+                to_return = 'print(\"ERROR: \\"DO\\" expected\")'
+            else:
+                condition = command_list[1:-1]
+                if len(condition) != 3 or not (condition[1] in ["<", "<=", "==", ">=", ">"]):
+                    to_return = 'print(\"ERROR: While do condition syntax must be: \\"WHILE <var> </<=/==/>=/> <var> ' \
+                                'DO\\"\")'
+                else:
+                    to_return = 'while ' + " ".join(condition) + ":"
         elif main == "ELSE":
             to_return = "else:"
         elif main == "exit":
