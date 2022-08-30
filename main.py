@@ -109,6 +109,8 @@ def toPython(code):
                                 'DO\\"\")'
                 else:
                     to_return = 'while ' + " ".join(condition) + ":"
+        elif main == "FOREVER":
+            to_return = 'while True:'
         elif main == "ELSE":
             to_return = "else:"
         elif main == "exit":
