@@ -1,1 +1,1 @@
-println "Hello World!"
+putln "Hello World!"
