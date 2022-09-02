@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ -x "$(command -v dnf)" ]
+then
+	sudo dnf install -y python3{,-tkinter,-pip} && pip install pyinstaller && sudo mv ./cpc /usr/local/bin
+elif [ -x "$(command -v apt)" ]
+then
+	sudo apt install -y python3{,-tk,-pip} && pip install pyinstaller && sudo mv ./cpc /usr/local/bin
+else
+	echo "ERROR: Cannot Detect Package Manager!"
+fi

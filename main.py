@@ -6,6 +6,9 @@ from subprocess import Popen
 
 args = sys.argv[1:]
 
+def help():
+    print("cpc version 1.0.0\nCopyright (c) 2022 Jiusoft\nUsage: cpc <filename>\n\nArguments:\n\t-h, -H or --help: Display this help message")
+
 def escape(string):
     toreturn=""
     for char in string:
@@ -182,9 +185,13 @@ def toPython(code):
 
 if len(args)==0:
     print("Required Argument: <filename>")
+    print("Use -h, -H, or --help for help. ")
     sys.exit(1)
 elif len(args)==1:
-    compile()
+    if args[0]=="-h" or args[0]=="-H" or args[0]=="--help":
+        help()
+    else:
+        compile()
 else:
     print(f'ERROR: 1 Argument expected but {len(args)} passed.')
     sys.exit(1)
