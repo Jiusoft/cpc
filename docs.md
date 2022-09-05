@@ -61,7 +61,7 @@ command argument1 argument2 argument3...
 
 ```
 putln Hello World!
-```
+``` 
 ### Get User's Name and Age and then Display Information
 ```
 getinput Please Enter your Name: 
