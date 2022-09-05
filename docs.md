@@ -8,10 +8,9 @@
 - [Syntax](#syntax)
   * [Syntax Overview](#syntax-overview)
   * [Commands Built-In](#commands-built-in)
-- [Examples](#examples)
-  * [Hello World](#hello-world)
-  * [Get User's Name and Age and then Display Information](#get-user-s-name-and-age-and-then-display-information)
-  * [Example GUI](#example-gui)
+- [Variables](#variables)
+  * [Creating a variable](#creating-a-variable)
+  * [Calling a variable](#calling-a-variable)
 - [Modifications](#modifications)
   * [libguimod](#libguimod)
 - [Conditions and Loops](#conditions-and-loops)
@@ -22,6 +21,10 @@
 - [Functions](#functions)
   * [Creating a function](#creating-a-function)
   * [Calling a function](#calling-a-function)
+- [Examples](#examples)
+  * [Hello World](#hello-world)
+  * [Get User's Name and Age and then Display Information](#get-user-s-name-and-age-and-then-display-information)
+  * [Example GUI](#example-gui)
 
 ---
 
@@ -56,32 +59,29 @@ command argument1 argument2 argument3...
 
 ---
 
-## Examples
-### Hello World
-
+## Variables
+### Creating a variable
 ```
-putln Hello World!
+Types:
+- string (s, str, or string can be used to declare a string)
+- intiger (i, int, or intiger can be used to declare an intiger)
 ```
-### Get User's Name and Age and then Display Information
+Syntax for creating a variable:
 ```
-getinput Please Enter your Name: 
-name = inputresult
-getinput Please Enter your Age: 
-age = inputresult
-putln Hello {name}, you are {age}.
+type varname = varvalue
 ```
 
-### Example GUI
+### Calling a variable
+To call a varible, use `{varname}`, for example:
 ```
-#addmod libguimod
-BEGIN examplefunc
- putln Hello World
-gui setup examplegui
-gui createlabel Click the Button Below to Display Hello World in Terminal
-gui createbutton examplefunc Click Here for Hello World in Terminal
-gui createbutton nocmd Click Here for Absolutely Nothing (also a feature of C+)
-gui run
+str name = James
+putln Hello, {name}, have a nice day!
 ```
+then the output will be:
+```
+Hello, James, have a nice day!
+```
+
 ---
 
 ## Modifications
@@ -97,6 +97,9 @@ libguimod is a modification that allows you to build gui applications.
 `gui createbutton` - Creates a button inside main window. Uses arg1 as command (nocmd for no command), uses arg2 to end for button text.
 
 `gui run` - Runs the GUI.
+
+---
+
 ## Conditions and Loops
 C+ Features If, For, Forever, and While Loops.
 
@@ -130,6 +133,8 @@ WHILE condition
  Do Something
 ```
 
+---
+
 ## Functions
 Functions are an essencial part of programming, it is a group of reuseable commands that can be called using only one command.
 
@@ -144,6 +149,35 @@ BEGIN function_name
 To call a function, just put the function name on a line like so.
 ```
 function_name
+```
+
+---
+
+## Examples
+### Hello World
+
+```
+putln Hello World!
+``` 
+### Get User's Name and Age and then Display Information
+```
+getinput Please Enter your Name: 
+s name = inputresult
+getinput Please Enter your Age: 
+s age = inputresult
+putln Hello {name}, you are {age}.
+```
+
+### Example GUI
+```
+#addmod libguimod
+BEGIN examplefunc
+ putln Hello World
+gui setup examplegui
+gui createlabel Click the Button Below to Display Hello World in Terminal
+gui createbutton examplefunc Click Here for Hello World in Terminal
+gui createbutton nocmd Click Here for Absolutely Nothing (also a feature of C+)
+gui run
 ```
 
 ---

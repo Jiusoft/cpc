@@ -89,9 +89,9 @@ def toPython(code):
             if "args" in command_list:
                 to_return = "print('Taken Variable Name: args (used for arguments passed to program)')"
             elif command_list[0] == "i" or command_list[0] == "int" or command_list[0]== "intiger":
-                to_return = f'{command_list[1]} = int({command_list[3:]})'
+                to_return = f'{command_list[1]} = int({" ".join(command_list[3:])})'
             elif command_list[0] == "s" or command_list[0] == "str" or command_list[0] == "string":
-                to_return = f'{command_list[1]} = "{command_list[3:]}"'
+                to_return = f'{command_list[1]} = "{" ".join(command_list[3:])}"'
             else:
                 to_return = "print('Variable Type not Specified.')"
         elif main == "IF":

@@ -1,5 +1,5 @@
 getinput Please Enter your Name: 
-name = inputresult
+s name = inputresult
 getinput Please Enter your Age: 
-age = inputresult
+s age = inputresult
 putln Hello {name}, you are {age}.
