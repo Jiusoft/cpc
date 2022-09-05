@@ -1,23 +1,16 @@
+import functools
 import sys
 import os
 from shutil import rmtree
 from subprocess import Popen
 
-
 args = sys.argv[1:]
+global funcs
+funcs = []
 
 def help():
     print("cpc version 1.0.0\nCopyright (c) 2022 Jiusoft\nUsage: cpc <filename>\n\nArguments:\n\t-h, -H or --help: Display this help message")
 
-def escape(string):
-    toreturn=""
-    for char in string:
-        if char=="\"" or char=="(" or char==")":
-            char=f"\\{char}"
-            toreturn+=char
-        else:
-            toreturn+=char
-    return toreturn
 
 def compile():
     global origfilename
@@ -78,32 +71,29 @@ def toPython(code):
         else:
             indent = checkindent(code)
         to_return = ""
-        tmp = list(code)
-        tmp1 = []
-        for item in tmp:
-            if item != "\\":
-                tmp1.append(item)
-            else:
-                tmp1.append("escape")
-        for item in tmp1:
-            if item == "escape":
-                i = tmp1.index(item)
-                del tmp1[i]
-                del tmp1[i]
-        command_list = "".join(tmp1).split()
+        command_list = code.strip(" \n").split(" ")
         main = command_list[0]
-        del tmp, tmp1
 
         if main == "putln":
             to_return = "print(f'" + " ".join(command_list[1:]) + "')"
         elif main == "getinput":
-            to_return = "inputresult = input(f'" + " ".join(command_list[1:]) + "')"
+            spaces = 0
+            while code.endswith(" "):
+                spaces += 1
+                code = code[:-1]
+            to_return = "inputresult = input(f'" + " ".join(command_list[1:])
+            for item in range(spaces):
+                to_return += " "
+            to_return += "')"
         elif "=" in command_list:
             if "args" in command_list:
                 to_return = "print('Taken Variable Name: args (used for arguments passed to program)')"
+            elif command_list[0] == "i" or command_list[0] == "int" or command_list[0]== "intiger":
+                to_return = f'{command_list[1]} = int({command_list[3:]})'
+            elif command_list[0] == "s" or command_list[0] == "str" or command_list[0] == "string":
+                to_return = f'{command_list[1]} = "{command_list[3:]}"'
             else:
-                to_return = " ".join(command_list)
-            to_return = " ".join(command_list)
+                to_return = "print('Variable Type not Specified.')"
         elif main == "IF":
             if not command_list[-1] == "THEN":
                 to_return = 'print(\"ERROR: \\"THEN\\" expected\")'
@@ -129,6 +119,7 @@ def toPython(code):
                 to_return = f"print('ERROR: Expected 1 argument {len(command_list)} passed.')"
             else:
                 to_return = f"def {command_list[1]}(funcargs=None):"
+                funcs.append(command_list[1])
         elif main == "FOR":
             if len(command_list) == 4 and command_list[2] == "IN":
                 to_return = f"for {command_list[1]} in {command_list[3]}:"
@@ -151,33 +142,39 @@ def toPython(code):
             else:
                 to_return = f"time.sleep({command_list[1]})"
         elif main == "gui":
-            if len(command_list) < 2:
-                to_return = "print('ERROR: Expected 1 or more arguments but 0 passed.')"
-            subcommand = command_list[1]
-            if subcommand == "setup":
-                if len(command_list) == 2:
-                    to_return = "root = tk.Tk(className='nonamegui')\nroot.title('nonamegui')"
-                else:
-                    to_return = f"root = tk.Tk(className='{' '.join(command_list[2:])}')\nroot.title('{' '.join(command_list[2:])}')"
-            elif subcommand == "run":
-                if not len(command_list) > 2:
-                    to_return = "root.mainloop()"
-                else:
-                    to_return = f"print('ERROR: 0 Arguments expected but {len(command_list)} passed.')"
-            elif subcommand == "createbutton":
-                cmdarg = command_list[2]
-                textarg = " ".join(command_list[3:])
-                if not cmdarg == "nocmd":
-                    to_return = f"button{str(buttoncount)} = tk.Button(root, text=f'{textarg}', command={cmdarg})\nbutton{str(buttoncount)}.pack()"
-                else:
-                    to_return = f"button{str(buttoncount)} = tk.Button(root, text=f'{textarg}')\nbutton{str(buttoncount)}.pack()"
-                buttoncount += 1
-            elif subcommand == "createlabel":
-                    textarg = " ".join(command_list[2:])
-                    to_return = f"label{str(labelcount)} = tk.Label(root, text=f'{textarg}')\nlabel{str(labelcount)}.pack()"
+            if open(origfilename).readline().rstrip().startswith("#addmod"):
+                if len(command_list) < 2:
+                    to_return = "print('ERROR: Expected 1 or more arguments but 0 passed.')"
+                subcommand = command_list[1]
+                if subcommand == "setup":
+                    if len(command_list) == 2:
+                        to_return = "root = tk.Tk(className='nonamegui')\nroot.title('nonamegui')"
+                    else:
+                        to_return = f"root = tk.Tk(className='{' '.join(command_list[2:])}')\nroot.title('{' '.join(command_list[2:])}')"
+                elif subcommand == "run":
+                    if not len(command_list) > 2:
+                        to_return = "root.mainloop()"
+                    else:
+                        to_return = f"print('ERROR: 0 Arguments expected but {len(command_list)} passed.')"
+                elif subcommand == "createbutton":
+                    cmdarg = command_list[2]
+                    textarg = " ".join(command_list[3:])
+                    if not cmdarg == "nocmd":
+                        to_return = f"button{str(buttoncount)} = tk.Button(root, text=f'{textarg}', command={cmdarg})\nbutton{str(buttoncount)}.pack()"
+                    else:
+                        to_return = f"button{str(buttoncount)} = tk.Button(root, text=f'{textarg}')\nbutton{str(buttoncount)}.pack()"
+                    buttoncount += 1
+                elif subcommand == "createlabel":
+                        textarg = " ".join(command_list[2:])
+                        to_return = f"label{str(labelcount)} = tk.Label(root, text=f'{textarg}')\nlabel{str(labelcount)}.pack()"
+            else:
+                to_return = "print('Command not found: gui')"
                 
         else:
-            to_return = f"print('Command Not Found: {main}')"
+            if main in funcs:
+                to_return = f"{main}()"
+            else:
+                to_return = f"print('Command Not Found: {main}')"
         for i in range(indent):
             to_return = "\t" + to_return
         return to_return
