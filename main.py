@@ -92,6 +92,13 @@ def toPython(code):
                 to_return = f'{command_list[1]} = int({" ".join(command_list[3:])})'
             elif command_list[0] == "s" or command_list[0] == "str" or command_list[0] == "string":
                 to_return = f'{command_list[1]} = "{" ".join(command_list[3:])}"'
+            elif command_list[0] == "b" or command_list[0] == "bool" or command_list[0] == "boolean":
+                if command_list[3] == "True" or not int(command_list[3]) == 0:
+                    to_return = f'{command_list[1]} = True'
+                elif command_list[3] == "False" or int(command_list[3]) == 0:
+                    to_return = f'{command_list[1]} = True'
+                else:
+                    to_return = "print('No Such Boolean Value. ')"
             else:
                 to_return = "print('Variable Type not Specified.')"
         elif main == "IF":
