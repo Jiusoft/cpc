@@ -115,7 +115,7 @@ ELSE
   Do Something (The actual else)
 ```
 ### For Loop Syntax
-This is used when, for example, I want to do something how many times according to the number of items in a list, then I can use this syntax:
+This is used when, for example, you want to do something how many times according to the number of items in a list, then you can use this syntax:
 ```
 FOR item IN list
  Do Something
