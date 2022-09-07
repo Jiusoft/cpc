@@ -9,7 +9,7 @@ global funcs
 funcs = []
 
 def help():
-    print("cpc version 1.0.0\nCopyright (c) 2022 Jiusoft\nUsage: cpc <filename>\n\nArguments:\n\t-h, -H or --help: Display this help message")
+    print("cpc version 1.1.3\nCopyright (c) 2022 Jiusoft\nUsage: cpc <filename>\n\nArguments:\n\t-h, -H or --help: Display this help message")
 
 
 def compile():
