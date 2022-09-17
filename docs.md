@@ -47,7 +47,7 @@ command argument1 argument2 argument3...
 ```
 
 ### Commands Built-In
-`putln` - Displays Text to Terminal Window.  Similar to Python `print()` command or bash `echo` command. 
+`putln` - Displays Text to Terminal Window.  Similar to Python `print()` command or bash `echo` command.
 
 `getinput` - Asks user for input and stores input to `inputresult` variable. Similar to Python `input()` command.
 
@@ -139,7 +139,7 @@ WHILE condition
 Functions are an essencial part of programming, it is a group of reuseable commands that can be called using only one command.
 
 ### Creating a function
-To Create a Function, use the `BEGIN` Keyword like so.
+To Create a Function, use the `DEFFUNC` Keyword like so.
 ```
 BEGIN function_name
  Do Things...
@@ -158,12 +158,12 @@ function_name
 
 ```
 putln Hello World!
-``` 
+```
 ### Get User's Name and Age and then Display Information
 ```
-getinput Please Enter your Name: 
+getinput Please Enter your Name:
 s name = inputresult
-getinput Please Enter your Age: 
+getinput Please Enter your Age:
 s age = inputresult
 putln Hello {name}, you are {age}.
 ```
@@ -171,7 +171,7 @@ putln Hello {name}, you are {age}.
 ### Example GUI
 ```
 #addmod libguimod
-BEGIN examplefunc
+DEFFUNC examplefunc
  putln Hello World
 gui setup examplegui
 gui createlabel Click the Button Below to Display Hello World in Terminal

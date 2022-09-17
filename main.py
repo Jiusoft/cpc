@@ -20,9 +20,10 @@ def compile():
         with open(filename + ".py", 'a+') as f:
             f.write(
                 "import socket\nimport os\nimport math\nimport sys\nhostname=socket.gethostname("
-                ")\nhostip=socket.gethostbyname(hostname)\nglobal args\nargs=sys.argv[1:]\n")
+                ")\nhostip=socket.gethostbyname(hostname)\nglobal args\nargs=sys.argv[1:]\nif len(args) > 9:\n\tprint('Application Crashed: Too much arguments to handle.'); sys.exit(1)\nelse:\n\tfor n in range(len(args), 9):\n\t\targs.append('')\narg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9 = args\ndel args\n")
         with open(args[0], 'r') as f:
             for line in f.readlines():
+                line = line.split("//")[0]
                 toAppend = toPython(line)
                 with open(filename + ".py", 'a') as nf:
                     nf.write(toAppend + "\n")
@@ -51,19 +52,19 @@ def toPython(code):
     if code == "\n":
         return "\n"
     elif code.startswith("#addmod "):
-        if open(origfilename).readline().rstrip().startswith("#addmod"):
-            try:
-                if code.split(" ")[1] == "libguimod\n":
-                    global buttoncount, labelcount
-                    buttoncount=0
-                    labelcount=0
-                    return "import tkinter as tk"
-                else:
-                    return 'print(\"ERROR: No such module!\")'
-            except IndexError:
-                return 'print(\"ERROR: Syntax for adding module is \\"#addmod MODULE\\"\"'
-        else:
-            return "print('ERROR: #addmod must be first line')"
+        try:
+            global imported
+            imported = []
+            if code.split(" ")[1] == "libguimod\n":
+                global buttoncount, labelcount
+                buttoncount=0
+                labelcount=0
+                imported.append("libguimod")
+                return "import tkinter as tk"
+            else:
+                return 'print(\"ERROR: No such module!\")'
+        except IndexError:
+            return 'print(\"ERROR: Syntax for adding module is \\"#addmod MODULE\\"\"'
 
     else:
         if checkindent(code) is None:
@@ -92,13 +93,6 @@ def toPython(code):
                 to_return = f'{command_list[1]} = int({" ".join(command_list[3:])})'
             elif command_list[0] == "s" or command_list[0] == "str" or command_list[0] == "string":
                 to_return = f'{command_list[1]} = "{" ".join(command_list[3:])}"'
-            elif command_list[0] == "b" or command_list[0] == "bool" or command_list[0] == "boolean":
-                if command_list[3] == "True" or not int(command_list[3]) == 0:
-                    to_return = f'{command_list[1]} = True'
-                elif command_list[3] == "False" or int(command_list[3]) == 0:
-                    to_return = f'{command_list[1]} = True'
-                else:
-                    to_return = "print('No Such Boolean Value. ')"
             else:
                 to_return = "print('Variable Type not Specified.')"
         elif main == "IF":
@@ -121,7 +115,7 @@ def toPython(code):
                                 'DO\\"\")'
                 else:
                     to_return = 'while ' + " ".join(condition) + ":"
-        elif main == "BEGIN":
+        elif main == "DEFFUNC":
             if len(command_list) != 2:
                 to_return = f"print('ERROR: Expected 1 argument {len(command_list)} passed.')"
             else:
@@ -149,7 +143,7 @@ def toPython(code):
             else:
                 to_return = f"time.sleep({command_list[1]})"
         elif main == "gui":
-            if open(origfilename).readline().rstrip().startswith("#addmod"):
+            if "libguimod" in imported:
                 if len(command_list) < 2:
                     to_return = "print('ERROR: Expected 1 or more arguments but 0 passed.')"
                 subcommand = command_list[1]
@@ -176,7 +170,6 @@ def toPython(code):
                         to_return = f"label{str(labelcount)} = tk.Label(root, text=f'{textarg}')\nlabel{str(labelcount)}.pack()"
             else:
                 to_return = "print('Command not found: gui')"
-                
         else:
             if main in funcs:
                 to_return = f"{main}()"
