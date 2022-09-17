@@ -16,7 +16,7 @@ def compile():
     global origfilename
     origfilename = args[0].split("/")[-1]
     filename = args[0].split("/")[-1].split(".")[0]
-    if os.path.isfile(origfilename):
+    if os.path.isfile(args[0]):
         with open(filename + ".py", 'a+') as f:
             f.write(
                 "import socket\nimport os\nimport math\nimport sys\nhostname=socket.gethostname("
