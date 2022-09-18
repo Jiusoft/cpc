@@ -71,6 +71,9 @@ Syntax for creating a variable:
 type varname = varvalue
 ```
 
+### Built in Variables
+- arg1 - arg9 - Arguments passed to the program.
+
 ### Calling a variable
 To call a varible, use `{varname}`, for example:
 ```
@@ -98,6 +101,19 @@ libguimod is a modification that allows you to build gui applications.
 
 `gui run` - Runs the GUI.
 
+### libfilemod
+libfilemod is a modification that allows you manipulate files.
+
+**Commands provided by `libfilemod`:**
+
+`filerw read` - Reads a file, arg1 as filename and arg2 as the variable to save to. eg. `filerw read newfile var`, then var1 will be first line, var2 will be second line, etc.
+
+`filerw write` - Writes to a file, arg1 as filename and arg2 as the text to write. If arg2 doesn't exist, it creates a blank file if the file doesn't exist.
+
+`filerw append` - Appends to a file, arg1 as filename and arg2 as the text to append.
+
+`filerw delete` - Deletes a file, arg1 as the filename to delete.
+
 ---
 
 ## Conditions and Loops
@@ -117,7 +133,7 @@ ELSE
 ### For Loop Syntax
 This is used when, for example, you want to do something how many times according to the number of items in a list, then you can use this syntax:
 ```
-FOR item IN list
+FOR letter IN string
  Do Something
 ```
 ### Forever Loop Syntax
@@ -141,7 +157,7 @@ Functions are an essencial part of programming, it is a group of reuseable comma
 ### Creating a function
 To Create a Function, use the `DEFFUNC` Keyword like so.
 ```
-BEGIN function_name
+DEFFUNC function_name
  Do Things...
 ```
 

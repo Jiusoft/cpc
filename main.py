@@ -19,7 +19,7 @@ def compile():
     if os.path.isfile(args[0]):
         with open(filename + ".py", 'a+') as f:
             f.write(
-                "import socket\nimport os\nimport math\nimport sys\nhostname=socket.gethostname("
+                "import socket\nimport os\nimport sys\nhostname=socket.gethostname("
                 ")\nhostip=socket.gethostbyname(hostname)\nglobal args\nargs=sys.argv[1:]\nif len(args) > 9:\n\tprint('Application Crashed: Too much arguments to handle.'); sys.exit(1)\nelse:\n\tfor n in range(len(args), 9):\n\t\targs.append('')\narg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9 = args\ndel args\n")
         with open(args[0], 'r') as f:
             for line in f.readlines():
@@ -61,6 +61,9 @@ def toPython(code):
                 labelcount=0
                 imported.append("libguimod")
                 return "import tkinter as tk"
+            elif code.split(" ")[1] == "libfilemod\n":
+                imported.append("libfilemod")
+                return "\n"
             else:
                 return 'print(\"ERROR: No such module!\")'
         except IndexError:
@@ -117,7 +120,7 @@ def toPython(code):
                     to_return = 'while ' + " ".join(condition) + ":"
         elif main == "DEFFUNC":
             if len(command_list) != 2:
-                to_return = f"print('ERROR: Expected 1 argument {len(command_list)} passed.')"
+                to_return = f"print('ERROR: Expected 1 argument but {len(command_list)-1} passed.')"
             else:
                 to_return = f"def {command_list[1]}(funcargs=None):"
                 funcs.append(command_list[1])
@@ -156,7 +159,7 @@ def toPython(code):
                     if not len(command_list) > 2:
                         to_return = "root.mainloop()"
                     else:
-                        to_return = f"print('ERROR: 0 Arguments expected but {len(command_list)} passed.')"
+                        to_return = f"print('ERROR: Expected 1 argument but {len(command_list)-2} passed.')"
                 elif subcommand == "createbutton":
                     cmdarg = command_list[2]
                     textarg = " ".join(command_list[3:])
@@ -168,8 +171,39 @@ def toPython(code):
                 elif subcommand == "createlabel":
                         textarg = " ".join(command_list[2:])
                         to_return = f"label{str(labelcount)} = tk.Label(root, text=f'{textarg}')\nlabel{str(labelcount)}.pack()"
+                else:
+                    to_return = 'print("Subcommand Not Found.")'
             else:
                 to_return = "print('Command not found: gui')"
+        elif main == "filerw":
+            if "libfilemod" in imported:
+                if len(command_list) < 2:
+                    to_return = "print('ERROR: Expected 1 or more arguments but 0 passed.')"
+                subcommand = command_list[1]
+                if subcommand == "read":
+                    if len(command_list) == 4:
+                        to_return = f"for i in range(0, len(open('{command_list[2]}', 'r').readlines())):\n\tlocals()['{command_list[3]}'+str(i+1)]=open('{command_list[2]}', 'r').readlines()[i].strip('\\n')"
+                    else:
+                        to_return = f"print('ERROR: Expected 1 argument but {len(command_list)-2} passed.')"
+                elif subcommand == "write":
+                    if len(command_list) >= 4:
+                        to_return = f"open('{command_list[2]}', 'w').write(f'{' '.join(command_list[3:])}')"
+                    elif len(command_list) == 3:
+                        to_return = f"open('{command_list[2]}', 'w').close()"
+                    else:
+                        to_return = f"print('ERROR: Expected 1 argument but {len(command_list)-2} passed.')"
+                elif subcommand == "append":
+                    if len(command_list) >= 4:
+                        to_return = f"if not open('{command_list[2]}', 'r').readlines() or open('{command_list[2]}', 'r').readlines()[-1].endswith('\\n'):\n\topen('{command_list[2]}', 'a').write(f'{' '.join(command_list[3:])}')\nelse:\n\topen('{command_list[2]}', 'a').write(f'\\n{' '.join(command_list[3:])}')"
+                    else:
+                        to_return = f"print('ERROR: Expected 2 arguments but {len(command_list)-2} passed.')"
+                elif subcommand == "delete":
+                    if len(command_list) == 3:
+                        to_return = f"os.remove(f'{command_list[2]}')"
+                else:
+                    to_return = 'print("Subcommand Not Found.")'
+            else:
+                to_return = "print('Command not found: filerw')"
         else:
             if main in funcs:
                 to_return = f"{main}()"
@@ -177,6 +211,7 @@ def toPython(code):
                 to_return = f"print('Command Not Found: {main}')"
         for i in range(indent):
             to_return = "\t" + to_return
+            to_return.replace("\n", "\n\t")
         return to_return
 
 
