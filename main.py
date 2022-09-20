@@ -65,26 +65,23 @@ def toPython(code):
     if code == '' or code == '\n':
         return '\n'
     elif main == '#addmod':
-        try:
-            global imported
-            imported = []
-            if len(command_list) > 2:
-                print("Too much commands for #addmod to handle.")
+        global imported
+        imported = []
+        if len(command_list) > 2:
+            to_return = "print(\'ERROR: Syntax for adding module is \\'#addmod MODULE\\'\'"
+        else:
+            if command_list[1] == 'libguimod' or code.split(' ')[1] == 'libguimod\n':
+                global buttoncount, labelcount
+                buttoncount=0
+                labelcount=0
+                imported.append('libguimod')
+                to_return = 'import tkinter as tk'
+            elif command_list[1] == 'libfilemod' or code.split(' ')[1] == 'libfilemod\n':
+                imported.append('libfilemod')
+                to_return = ''
             else:
-                if command_list[1] == 'libguimod' or code.split(' ')[1] == 'libguimod\n':
-                    global buttoncount, labelcount
-                    buttoncount=0
-                    labelcount=0
-                    imported.append('libguimod')
-                    to_return = 'import tkinter as tk'
-                elif command_list[1] == 'libfilemod' or code.split(' ')[1] == 'libfilemod\n':
-                    imported.append('libfilemod')
-                    to_return = ''
-                else:
-                    print(command_list)
-                    return "print(\'ERROR: No such module!\')"
-        except IndexError:
-            return "print(\'ERROR: Syntax for adding module is \\'#addmod MODULE\\'\'"
+                print(command_list)
+                return "print(\'ERROR: No such module!\')"
     elif main == 'putln':
         to_return = 'print(f"' + ' '.join(command_list[1:]) + '")'
     elif main == 'getinput':
