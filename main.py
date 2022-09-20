@@ -1,8 +1,6 @@
-import functools
 import sys
 import os
 from shutil import rmtree
-from subprocess import Popen
 import PyInstaller.__main__
 
 args = sys.argv[1:]
