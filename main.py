@@ -1,7 +1,4 @@
-import sys
-import os
-from shutil import rmtree
-import PyInstaller.__main__
+import os, sys, shutil
 
 args = sys.argv[1:]
 global funcs
@@ -32,8 +29,13 @@ def compile():
                 with open(filename + '.py', "a") as nf:
                     nf.write(toAppend + '\n')
 
-        PyInstaller.__main__.run([filename + '.py', '--onefile', '--distpath', '.'])
-        rmtree('build')
+        if sys.platform == "linux" or platform == "linux2":
+            os.system(f"python3 -m PyInstaller --onefile --distpath . {filename}.py")
+        elif sys.platform == "darwin":
+            os.system(f"python3 -m PyInstaller --onefile --distpath . {filename}.py")
+        elif sys.platform == "win32":
+            os.system(f"python -m PyInstaller --onefile --distpath . {filename}.py")
+        shutil.rmtree('build')
         os.remove(filename + '.spec')
         os.remove(filename + '.py')
     else:

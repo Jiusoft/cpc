@@ -12,6 +12,7 @@
   * [Creating a variable](#creating-a-variable)
   * [Built in Variables](#built-in-variables)
   * [Calling a variable](#calling-a-variable)
+- [Comments](#comments)
 - [Modifications](#modifications)
   * [libguimod](#libguimod)
   * [libfilemod](#libfilemod)
@@ -86,6 +87,11 @@ then the output will be:
 ```
 Hello, James, have a nice day!
 ```
+
+---
+
+## Comments
+Only Single Line Comments are supported for now, and to start it, use `//`. Everything after `//` will be considered a comment and will not be read by the compiler. For a full line comment, start the line with `//`
 
 ---
 
