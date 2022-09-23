@@ -76,6 +76,8 @@ type varname = varvalue
 
 ### Built in Variables
 - arg1 - arg9 - Arguments passed to the program.
+- hostname - For Checking Host Name.
+- hostip - For Checking Host IP Address.
 
 ### Calling a variable
 To call a varible, use `{varname}`, for example:

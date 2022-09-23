@@ -7,7 +7,6 @@ funcs = []
 def help():
     print('cpc version 2.0.0\nCopyright (c) 2022 Jiusoft\nUsage: cpc <filename>\n\nArguments:\n\t-h, -H or --help: Display this help message')
 
-
 def compile():
     global origfilename
     skipappend=False
@@ -42,7 +41,6 @@ def compile():
         print('ERROR: File not found')
         sys.exit(1)
 
-
 def checkindent(code, indent=0):
     if code.startswith(' '):
         indent += 1
@@ -52,7 +50,6 @@ def checkindent(code, indent=0):
         else:
             return indent
 
-
 def toPython(code):
     if checkindent(code) is None:
         indent = 0
@@ -61,7 +58,6 @@ def toPython(code):
     to_return = ''
     command_list = code.strip(' \n').split(' ')
     main = command_list[0]
-
     if code == '' or code == '\n':
         return '\n'
     elif main == '#addmod':
@@ -98,8 +94,14 @@ def toPython(code):
             to_return += ' '
         to_return += '")'
     elif '=' in command_list:
-        if 'args' in command_list:
-            to_return = 'print("Taken Variable Name: args (used for arguments passed to program)")'
+        if len(command_list[:command_list.index('=')]) > 2:
+            to_return = f'print("Variable name can only be one word.")'
+        elif command_list[1] == 'arg1' or command_list[1] == 'arg2' or command_list[1] == 'arg3' or command_list[1] == 'arg4' or command_list[1] == 'arg5' or command_list[1] == 'arg6' or command_list[1] == 'arg7' or command_list[1] == 'arg8' or command_list[1] == 'arg9':
+            to_return = f'print("Taken Variable Name: {command_list[1]}'
+        elif command_list[1] == 'hostname':
+            to_return = f'print("Taken Variable Name: {command_list[1]}'
+        elif command_list[1] == 'hostip':
+            to_return = f'print("Taken Variable Name: {command_list[1]}'
         elif command_list[0] == 'i' or command_list[0] == 'int' or command_list[0]== 'intiger':
             to_return = f"{command_list[1]} = int({' '.join(command_list[3:])})"
         elif command_list[0] == 's' or command_list[0] == 'str' or command_list[0] == 'string':
@@ -226,7 +228,6 @@ def toPython(code):
         to_return = '\t' + to_return
         to_return.replace('\n', '\n\t')
     return to_return
-
 
 if len(args)==0:
     print('Required Argument: <filename>')
