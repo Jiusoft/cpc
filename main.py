@@ -1,4 +1,4 @@
-import os, sys, shutil
+import os, sys, shutil, platform
 
 args = sys.argv[1:]
 global funcs
@@ -28,11 +28,9 @@ def compile():
                 with open(filename + '.py', "a") as nf:
                     nf.write(toAppend + '\n')
 
-        if sys.platform == "linux" or platform == "linux2":
+        if platform.system() == "Linux" or platform == "Darwin":
             os.system(f"python3 -m PyInstaller --onefile --distpath . {filename}.py")
-        elif sys.platform == "darwin":
-            os.system(f"python3 -m PyInstaller --onefile --distpath . {filename}.py")
-        elif sys.platform == "win32":
+        elif platform.system() == "Windows":
             os.system(f"python -m PyInstaller --onefile --distpath . {filename}.py")
         shutil.rmtree('build')
         os.remove(filename + '.spec')
