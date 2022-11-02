@@ -268,11 +268,4 @@ function_name arg1 arg2 arg3 ...
 
 ---
 
-## Examples
-
-Examples Link: [Click here](https://github.com/Jiusoft/cpc/tree/main/examples)
-
----
-
-<br>
-<div style="text-align: center;"><small>Copyright (c) 2022 Jiusoft</small></div>
+<div align="center">Copyright (c) 2022 Jiusoft</div>
